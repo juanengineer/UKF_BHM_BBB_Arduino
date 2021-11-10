@@ -153,7 +153,7 @@ uint8_t rx_cfg[TOTAL_IC][8];
  ***********************************************************************/
 void setup()
 {
-  Serial.begin(115200);
+  Serial.begin(115200);   //Juan- Original was 115200
   LTC6804_initialize();  //Initialize LTC6804 hardware
   init_cfg();        //initialize the 6804 configuration array to be written
   print_menu();
@@ -165,14 +165,21 @@ void setup()
 ***********************************************************************/
 void loop()
 {
-
+/*
   if (Serial.available())           // Check for user input
   {
     uint32_t user_command;
     user_command = read_int();      // Read the user command
     Serial.println(user_command);
+    delay(1000);
     run_command(user_command);
   }
+  */
+  uint32_t user_command;
+  user_command = 7;
+  Serial.println(user_command);
+  delay(1000);
+  run_command(user_command);
 }
 
 
@@ -281,7 +288,8 @@ void run_command(uint32_t cmd)
         error = LTC6804_rdcv(0, TOTAL_IC,cell_codes);
         if (error == -1)
         {
-          Serial.println("A PEC error was detected in the received data");
+        //  Serial.println("A PEC error was detected in the received data");
+          Serial.write("A PEC error was detected in the received data"); //Juan
         }
         print_cells();
         delay(500);
@@ -332,11 +340,11 @@ void print_menu()
 
 
 /*!************************************************************
-  \brief Prints cell coltage codes to the serial port
+  \brief Prints cell voltage codes to the serial port
  *************************************************************/
 void print_cells()
 {
-
+float total_battery_voltage = 0.0;  //Juan: total battery
 
   for (int current_ic = 0 ; current_ic < TOTAL_IC; current_ic++)
   {
@@ -349,8 +357,11 @@ void print_cells()
       Serial.print(":");
       Serial.print(cell_codes[current_ic][i]*0.0001,4);
       Serial.print(",");
+      total_battery_voltage = total_battery_voltage + cell_codes[current_ic][i]*0.0001; //Juan: Sum all the cell voltages
     }
-    Serial.println();
+    Serial.println();                            //Juan:
+    Serial.print("Total Battery Voltage = ");   //Juan:
+    Serial.print(total_battery_voltage, 4);      //Juan:
   }
   Serial.println();
 }
