@@ -155,7 +155,8 @@ uint8_t rx_cfg[TOTAL_IC][8];
  ***********************************************************************/
 void setup()
 {
-  Serial.begin(115200);   //Juan- Original was 115200
+//  Serial.begin(115200);   //Juan
+  Serial.begin(9600);   //Baud rate Juan: Original was 9600
   LTC6804_initialize();  //Initialize LTC6804 hardware
   init_cfg();        //initialize the 6804 configuration array to be written
 //  print_menu();
@@ -352,7 +353,7 @@ void print_menu()
 void print_cells()
 {
 float total_battery_voltage = 0.0;  //Juan: total battery
-
+int number_of_battery_cells = 5;    //Juan: cells for battery in question
   for (int current_ic = 0 ; current_ic < TOTAL_IC; current_ic++)
   {
     /*
@@ -360,6 +361,7 @@ float total_battery_voltage = 0.0;  //Juan: total battery
     Serial.print(current_ic+1,DEC);
     */
     for (int i=0; i<12; i++)
+//      for (int i= 0; i < number_of_battery_cells; i++)
     {
     /*
       Serial.print(" C");
@@ -375,13 +377,15 @@ float total_battery_voltage = 0.0;  //Juan: total battery
    //Serial.print("Timer is = ");
    //Serial.print(time);
    //Serial.print(".  Total Battery Voltage = ");   //Juan:
-    Serial.print("Total Battery Voltage = ");   //Juan:
+     Serial.println("i= 60.0000");     //Juan: added for testing
+    Serial.print("V=");   //Juan:
     Serial.println(total_battery_voltage, 4);      //Juan:
-    if (total_battery_voltage == 78.6420)
+    if (total_battery_voltage == 78.6420)    //Juan:
+ //     if (total_battery_voltage == 32.7675)    //Juan: 5 cell battery check statement
     {
-    Serial.println("Battery not connected.");
+    Serial.println("NC"); //Battery Not Connected
     }
-    Serial.println("i = 60.0000");     //Juan: added for testing
+   
   }
   Serial.println();
 }
