@@ -11,12 +11,21 @@
 #include<fcntl.h>
 #include<unistd.h>
 #include<termios.h>   // using the termios.h library
+#include<string.h>
+#include<stdlib.h>
 
 int main(){
    int file, count;
-
-   if ((file = open("/dev/ttyO4", O_RDWR | O_NOCTTY | O_NDELAY))<0){
-      perror("UART: Failed to open the file.\n");
+   int res, strpos;
+   unsigned char *ans1;
+   char str4[25];
+   float val;
+ for( ; ; ){
+ //  if ((file = open("/dev/ttyO4", O_RDWR | O_NOCTTY | O_NDELAY))<0){
+ //     perror("UART: Failed to open the file.\n");
+   
+   if ((file = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_NDELAY))<0){
+      perror("USB: Failed to open the file.\n");
       return -1;
    }
    struct termios options;               //The termios structure is vital
@@ -29,24 +38,26 @@ int main(){
    tcflush(file, TCIFLUSH);             //discard file information not transmitted
    tcsetattr(file, TCSANOW, &options);  //changes occur immmediately
 
-   unsigned char transmit[18] = "Hello BeagleBone!";  //the string to send
-
-   if ((count = write(file, &transmit,18))<0){        //send the string
-      perror("Failed to write to the output\n");
-      return -1;
-   }
 
    usleep(100000);                  //give the Arduino a chance to respond
 
-   unsigned char receive[100];      //declare a buffer for receiving data
-   if ((count = read(file, (void*)receive, 100))<0){   //receive the data
+   unsigned char receive[300];      //declare a buffer for receiving data
+   if ((count = read(file, (void*)receive, 300))<0){   //receive the data
       perror("Failed to read from the input\n");
       return -1;
    }
    if (count==0) printf("There was no data available to read!\n");
    else {
       printf("The following was read in [%d]: %s\n",count,receive);
-   }
+      printf("The size of the string is %d: \n",strlen(receive));
+      ans1 = strstr(receive,"C1:"); //search for "Voltage" in the receive string
+      strpos = ans1 - receive;      //subtract pointers
+      printf("strpos = %d\n",strpos);
+      str4[0] = receive[strpos+3];
+      val = atof(str4);  //Convert string to floating point and add previous value
+      printf("Convert to float and add2: %f\n",val+2);
+ } 
    close(file);
+ }
    return 0;
 }
