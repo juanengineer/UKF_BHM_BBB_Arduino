@@ -12,8 +12,8 @@ void loop() {
    if(Serial.available()>0){          // A byte has been received
       charIn = Serial.read();       // Read the character in from the BBB
       delay(10);
-      if (charIn == 'y') Serial.println("u");         // Send the character back to the BBB 
-      if (charIn != 'y') Serial.println(charIn);
+      if (charIn == 'y') Serial.print(2); Serial.write(10);        // Send the character back to the BBB 
+      if (charIn != 'y') Serial.print(3); Serial.write(10);
      
    }
    //else charIn = 'x1';
