@@ -100,6 +100,8 @@ Copyright 2013 Linear Technology Corp. (LTC)
 #include "LTC68041.h"
 #include <SPI.h>
 
+int time;
+
 const uint8_t TOTAL_IC = 1;//!<number of ICs in the daisy chain
 
 /******************************************************
@@ -156,7 +158,7 @@ void setup()
   Serial.begin(115200);   //Juan- Original was 115200
   LTC6804_initialize();  //Initialize LTC6804 hardware
   init_cfg();        //initialize the 6804 configuration array to be written
-  print_menu();
+//  print_menu();
 }
 
 /*!*********************************************************************
@@ -177,8 +179,8 @@ void loop()
   */
   uint32_t user_command;
   user_command = 7;
-  Serial.println(user_command);
-  delay(1000);
+//  Serial.println(user_command);
+//  delay(1000);
   run_command(user_command);
 }
 
@@ -272,18 +274,19 @@ void run_command(uint32_t cmd)
       break;
 
     case 7:
-      Serial.println("transmit 'm' to quit");
+ //     Serial.println("transmit 'm' to quit");
       wakeup_sleep();
       LTC6804_wrcfg(TOTAL_IC,tx_cfg);
       while (input != 'm')
       {
-        if (Serial.available() > 0)
+   /*     if (Serial.available() > 0)
         {
           input = read_char();
         }
+    */
         wakeup_idle();
         LTC6804_adcv();
-        delay(10);
+  //      delay(10);
         wakeup_idle();
         error = LTC6804_rdcv(0, TOTAL_IC,cell_codes);
         if (error == -1)
@@ -292,7 +295,7 @@ void run_command(uint32_t cmd)
           Serial.write("A PEC error was detected in the received data"); //Juan
         }
         print_cells();
-        delay(500);
+ //       delay(500);
       }
       print_menu();
       break;
@@ -348,20 +351,32 @@ float total_battery_voltage = 0.0;  //Juan: total battery
 
   for (int current_ic = 0 ; current_ic < TOTAL_IC; current_ic++)
   {
+    /*
     Serial.print(" IC ");
     Serial.print(current_ic+1,DEC);
+    */
     for (int i=0; i<12; i++)
     {
+    /*
       Serial.print(" C");
       Serial.print(i+1,DEC);
       Serial.print(":");
-      Serial.print(cell_codes[current_ic][i]*0.0001,4);
+      Serial.print(cell_codes[current_ic][i]*0.0001,8);
       Serial.print(",");
+    */
       total_battery_voltage = total_battery_voltage + cell_codes[current_ic][i]*0.0001; //Juan: Sum all the cell voltages
     }
     Serial.println();                            //Juan:
-    Serial.print("Total Battery Voltage = ");   //Juan:
-    Serial.print(total_battery_voltage, 4);      //Juan:
+    time = millis();
+    Serial.print("Timer is = ");
+    Serial.print(time);
+    Serial.print(".  Total Battery Voltage = ");   //Juan:
+    Serial.println(total_battery_voltage, 4);      //Juan:
+    if (total_battery_voltage == 78.6420)
+    {
+    Serial.println("Battery not connected.");
+    }
+    
   }
   Serial.println();
 }
