@@ -183,7 +183,7 @@ void loop()
 //  delay(1000);
   run_command(user_command);  //Commented for testing
 //Serial.println("Timer is = 12345. Total Battery Voltage = 21.0000");
-Serial.println("i = 60.0000");
+//Serial.println("i = 60.0000");  //Moved to print_cells for testing
 //Serial.println("Battery not connected.");
 Serial.println();
 }
@@ -371,16 +371,17 @@ float total_battery_voltage = 0.0;  //Juan: total battery
       total_battery_voltage = total_battery_voltage + cell_codes[current_ic][i]*0.0001; //Juan: Sum all the cell voltages
     }
     Serial.println();                            //Juan:
-    time = millis();
-    Serial.print("Timer is = ");
-    Serial.print(time);
-    Serial.print(".  Total Battery Voltage = ");   //Juan:
+   // time = millis();
+   //Serial.print("Timer is = ");
+   //Serial.print(time);
+   //Serial.print(".  Total Battery Voltage = ");   //Juan:
+    Serial.print("Total Battery Voltage = ");   //Juan:
     Serial.println(total_battery_voltage, 4);      //Juan:
     if (total_battery_voltage == 78.6420)
     {
     Serial.println("Battery not connected.");
     }
-    
+    Serial.println("i = 60.0000");     //Juan: added for testing
   }
   Serial.println();
 }
