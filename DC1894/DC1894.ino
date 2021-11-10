@@ -180,16 +180,34 @@ void loop()
     run_command(user_command);
   }
   */
+ /*  //This is working code below
   uint32_t user_command;
   user_command = 7;
 //  Serial.println(user_command);
 //  delay(1000);
   run_command(user_command);  //Commented for testing
+ */  //This is working code above
 //Serial.println("Timer is = 12345. Total Battery Voltage = 21.0000");
 //Serial.println("i = 60.0000");  //Moved to print_cells for testing
 //Serial.println("Battery not connected.");
-Serial.println();
 
+ int count;
+  if (count = Serial.available()) //A byte has been received.
+  {
+    //Serial.println(count);
+    char input;
+    input = Serial.read();
+    //Serial.println(input);
+    //Serial.print("You entered ");
+    //Serial.println(input);
+    if (input == 'm') Serial.println("Do you want me to quit, Juan?");
+    if (input == 'y') Serial.println("Sure to continue??");
+  }
+  /*
+  if (Serial.available() <= 0) Serial.println("Serial from Linduino is not available!");
+  //Serial.println();
+  */
+  delay(400);
 }
 
 
@@ -318,7 +336,7 @@ void run_command(uint32_t cmd)
 //      Serial.println(micros() - timezero);
       }
 //      print_menu();
-      if (input = 'm') Serial.println("hello Juan");
+      if (input == 'm') Serial.println("hello Juan");
       
       break;
 
