@@ -181,7 +181,11 @@ void loop()
   user_command = 7;
 //  Serial.println(user_command);
 //  delay(1000);
-  run_command(user_command);
+  run_command(user_command);  //Commented for testing
+//Serial.println("Timer is = 12345. Total Battery Voltage = 21.0000");
+Serial.println("i = 60.0000");
+//Serial.println("Battery not connected.");
+Serial.println();
 }
 
 
