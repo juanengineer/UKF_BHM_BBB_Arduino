@@ -153,6 +153,7 @@ uint8_t rx_cfg[TOTAL_IC][8];
 /*!**********************************************************************
  \brief  Inititializes hardware and variables
  ***********************************************************************/
+unsigned long timezero;
 void setup()
 {
 //  Serial.begin(115200);   //Juan
@@ -168,6 +169,7 @@ void setup()
 ***********************************************************************/
 void loop()
 {
+ 
 /*
   if (Serial.available())           // Check for user input
   {
@@ -187,6 +189,7 @@ void loop()
 //Serial.println("i = 60.0000");  //Moved to print_cells for testing
 //Serial.println("Battery not connected.");
 Serial.println();
+
 }
 
 
@@ -237,8 +240,9 @@ void run_command(uint32_t cmd)
       error = LTC6804_rdcfg(TOTAL_IC,rx_cfg);
       if (error == -1)
       {
-        Serial.println("A PEC error was detected in the received data");
-      }
+      Serial.println("A PEC error was detected in the received data");
+     
+            }
       print_rxconfig();
       break;
 
@@ -284,6 +288,7 @@ void run_command(uint32_t cmd)
       LTC6804_wrcfg(TOTAL_IC,tx_cfg);
       while (input != 'm')
       {
+ //       timezero = micros();
    /*     if (Serial.available() > 0)
         {
           input = read_char();
@@ -291,18 +296,22 @@ void run_command(uint32_t cmd)
     */
         wakeup_idle();
         LTC6804_adcv();
-  //      delay(10);
+        //delay(1);// Juan: Roughly 1000 Hz. This is milliseconds
+        delayMicroseconds(100); //Juan: Roughly 10,000 Hz. This is microseconds
         wakeup_idle();
         error = LTC6804_rdcv(0, TOTAL_IC,cell_codes);
         if (error == -1)
         {
         //  Serial.println("A PEC error was detected in the received data");
-          Serial.write("A PEC error was detected in the received data"); //Juan
+        // Serial.write("A PEC error was detected in the received data"); //Juan
+          Serial.print("PEC error in RX data.");
         }
         print_cells();
  //       delay(500);
+//      Serial.print("Elapsed time is ");
+//      Serial.println(micros() - timezero);
       }
-      print_menu();
+//      print_menu();
       break;
 
     default:
@@ -372,18 +381,18 @@ int number_of_battery_cells = 5;    //Juan: cells for battery in question
     */
       total_battery_voltage = total_battery_voltage + cell_codes[current_ic][i]*0.0001; //Juan: Sum all the cell voltages
     }
-    Serial.println();                            //Juan:
+ //   Serial.println();                            //Juan:
    // time = millis();
    //Serial.print("Timer is = ");
    //Serial.print(time);
    //Serial.print(".  Total Battery Voltage = ");   //Juan:
-     Serial.println("i= 60.0000");     //Juan: added for testing
-    Serial.print("V=");   //Juan:
-    Serial.println(total_battery_voltage, 4);      //Juan:
+     Serial.print("i=59.0000");     //Juan: added for testing
+    Serial.print(". V=");   //Juan:
+    Serial.print(total_battery_voltage, 4);      //Juan:
     if (total_battery_voltage == 78.6420)    //Juan:
  //     if (total_battery_voltage == 32.7675)    //Juan: 5 cell battery check statement
     {
-    Serial.println("NC"); //Battery Not Connected
+    Serial.print(" NC."); //Battery Not Connected
     }
    
   }
