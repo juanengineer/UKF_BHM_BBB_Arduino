@@ -289,15 +289,21 @@ void run_command(uint32_t cmd)
       while (input != 'm')
       {
  //       timezero = micros();
-   /*     if (Serial.available() > 0)
+        //
+        
+        //if (Serial.available() > 0)
+        if (Serial.available())
         {
-          input = read_char();
+          //input = read_char();
+          input = Serial.read();
+                  //reads first 8bit character entered by user
         }
-    */
+    
         wakeup_idle();
         LTC6804_adcv();
         //delay(1);// Juan: Roughly 1000 Hz. This is milliseconds
-        delayMicroseconds(100); //Juan: Roughly 10,000 Hz. This is microseconds
+        //delayMicroseconds(1000000); //Juan: 100us is Roughly 10,000 Hz.  Largest delay is 16383us.  Use delayMicroseconds for larger delay.
+        delay(500);
         wakeup_idle();
         error = LTC6804_rdcv(0, TOTAL_IC,cell_codes);
         if (error == -1)
@@ -312,6 +318,8 @@ void run_command(uint32_t cmd)
 //      Serial.println(micros() - timezero);
       }
 //      print_menu();
+      if (input = 'm') Serial.println("hello Juan");
+      
       break;
 
     default:
@@ -396,7 +404,7 @@ int number_of_battery_cells = 5;    //Juan: cells for battery in question
     }
    
   }
-  Serial.println();
+  Serial.println();  //Removing newlines to improve capture by BBB. Doesn't seem to work.
 }
 
 /*!****************************************************************************
